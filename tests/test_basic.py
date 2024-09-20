@@ -28,16 +28,17 @@ async def test_basic(client):
 async def test_invalid_token(client):
     response = client.get("/secure", headers={"Authorization": "Bearer INVALID_TOKEN"})
     assert response.status_code == 401
-    assert response.json() == {"detail": "Provided token is invalid"}
+    assert response.json() == {"detail": "Invalid token"}
 
 
 async def test_invalid_header(client):
     response = client.get("/secure", headers={"Authorization": "INVALID_TOKEN"})
-    assert response.status_code == 400
-    assert response.json() == {"detail": "Authorization should start with 'Bearer'"}
+    assert response.status_code == 403
+    print(response.json())
+    assert response.json() == {"detail": "Not authenticated"}
 
 
 async def test_no_header(client):
     response = client.get("/secure")
-    assert response.status_code == 400
-    assert response.json() == {"detail": "Authorization header is required"}
+    assert response.status_code == 403
+    assert response.json() == {"detail": "Not authenticated"}

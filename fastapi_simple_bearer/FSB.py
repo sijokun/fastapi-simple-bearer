@@ -1,7 +1,7 @@
 from typing import List, Optional, Set, Union
 
-from fastapi import Request, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import HTTPException, Request, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel
 
 
@@ -9,6 +9,7 @@ class FSBToken(BaseModel):
     """
     Pydantic model representing a valid bearer token.
     """
+
     token: str
 
 
@@ -16,11 +17,8 @@ class FSB(HTTPBearer):
     """
     FastAPI dependency class for simple bearer token authentication.
     """
-    def __init__(
-        self,
-        token: Union[str, List[str], Set[str]],
-        auto_error: bool = True
-    ):
+
+    def __init__(self, token: Union[str, List[str], Set[str]], auto_error: bool = True):
         """
         Initialize the FSB class with one or multiple valid tokens.
 
@@ -35,7 +33,9 @@ class FSB(HTTPBearer):
         elif isinstance(token, (list, set)):
             self._tokens = set(token)
         else:
-            raise ValueError("Token must be a string, list of strings, or set of strings")
+            raise ValueError(
+                "Token must be a string, list of strings, or set of strings"
+            )
 
     async def __call__(self, request: Request) -> FSBToken:
         """
@@ -50,7 +50,9 @@ class FSB(HTTPBearer):
         Raises:
             HTTPException: If authentication fails.
         """
-        credentials: Optional[HTTPAuthorizationCredentials] = await super().__call__(request)
+        credentials: Optional[HTTPAuthorizationCredentials] = await super().__call__(
+            request
+        )
         if not credentials or not credentials.scheme:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -58,7 +60,7 @@ class FSB(HTTPBearer):
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        if credentials.scheme.lower() != 'bearer':
+        if credentials.scheme.lower() != "bearer":
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid authentication scheme",

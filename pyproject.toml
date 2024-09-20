@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastapi-simple-bearer"
-version = "0.1.1"
+version = "0.1.2"
 description = "The simpliest way to secure your API with preset token"
 authors = ["Yan Khachko <a@slnk.icu>"]
 readme = "README.md"

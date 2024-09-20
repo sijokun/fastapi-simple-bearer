@@ -4,7 +4,6 @@ from fastapi.testclient import TestClient
 
 from fastapi_simple_bearer import FSB, FSBToken
 
-
 tokens = {"TOKEN1", "TOKEN2", "TOKEN3"}
 
 
@@ -22,11 +21,8 @@ def client():
     return client
 
 
-@pytest.mark.parametrize(
-    "token", ["TOKEN1", "TOKEN2", "TOKEN3"]
-)
+@pytest.mark.parametrize("token", ["TOKEN1", "TOKEN2", "TOKEN3"])
 async def test_tokens(client, token):
     response = client.get("/secure", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     assert response.json() == {"token": token}
-
