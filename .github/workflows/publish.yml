@@ -1,8 +1,9 @@
-name: Release
+name: Publish Python Package
 
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - '*.*.*'
 
 permissions:
   contents: read
